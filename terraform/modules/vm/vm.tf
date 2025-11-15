@@ -11,7 +11,7 @@ resource "azurerm_network_interface" "main" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "" {
+resource "azurerm_linux_virtual_machine" "main" {
   name                = "vm-webinstance"
   location            = var.location
   resource_group_name = var.resource_group

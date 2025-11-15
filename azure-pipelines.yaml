@@ -17,7 +17,7 @@ variables:
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
   # Environment name
-  environmentName: 'test'
+  environmentName: 'test-vm'
   webAppName: 'udacity-at-acn-test-app-AppService'
 
 stages:
@@ -181,7 +181,7 @@ stages:
   - deployment: FakeRestAPI
     pool:
       vmImage: 'Ubuntu-18.04'      
-    environment: <environment name>   # ToDo
+    environment: $(environmentName)
     strategy:
       runOnce:
         deploy:
@@ -211,7 +211,7 @@ stages:
   - deployment: VMDeploy
     displayName: Selenium Tests
     environment:
-      name:         # ToDo: Change/provide a name
+      name: $(environmentName)
       resourceType: VirtualMachine
       tags: selenium
     strategy:
