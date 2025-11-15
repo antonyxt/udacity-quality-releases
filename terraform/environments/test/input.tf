@@ -1,7 +1,9 @@
 # Azure GUIDS
 variable "subscription_id" {}
 variable "client_id" {}
-variable "clients" {}
+variable "client_secret" {
+type = string
+}
 variable "tenant_id" {}
 
 # Resource Group/Location
