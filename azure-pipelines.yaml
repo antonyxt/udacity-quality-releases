@@ -11,14 +11,24 @@ trigger:
 pool: my-agent-pool
 
 variables:
-  python.version: '3.7.6'
-  # ToDo: Replace the service connection name as used in the DevOps project settings
-  azureServiceConnectionId: 'my-service-connection'
-  # Project root folder. Point to the folder containing manage.py file.
-  projectRoot: $(System.DefaultWorkingDirectory)
-  # Environment name
-  environmentName: 'test-vm'
-  webAppName: 'udacity-at-acn-test-app-AppService'
+- group: terraform-secrets
+
+- name: python.version
+  value: '3.7.6'
+
+- name: azureServiceConnectionId
+  value: 'my-service-connection'
+
+- name: projectRoot
+  value: $(System.DefaultWorkingDirectory)
+
+- name: environmentName
+  value: 'test-vm'
+
+- name: webAppName
+  value: 'udacity-at-acn-test-app-AppService'
+
+
 
 stages:
 #--------------------------------------------#  
@@ -81,6 +91,7 @@ stages:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+        commandOptions: '-var="client_secret=$(client_secret)"'
 
     # ToDo: Change the workingDirectory path, as applicable to you
     # Destroy the resources in Azure by running a separate pipeline. 
