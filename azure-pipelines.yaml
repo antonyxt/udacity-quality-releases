@@ -6,7 +6,7 @@ name: Azure Pipelines
 trigger:
 - main
 
-# ToDo: Replace the agent pool name, if you are using Udacity Cloud lab. 
+
 # Otherwise, comment out the line below. 
 pool: my-agent-pool
 
@@ -47,7 +47,7 @@ stages:
         terraformVersion: '1.2.9'
     
     # Run Terraform Init on the pipeline agent 
-    # ToDo: Replace the resource group name, storage account name, and container name below
+
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
       displayName: 'Terrafom init'
       inputs:
@@ -133,9 +133,9 @@ stages:
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '**/TEST-*.xml'
-        searchFolder:       # ToDo
+        searchFolder: 'automatedtesting/postman'
         mergeTestResults: true
-        testRunTitle:       # ToDo
+        testRunTitle: 'Publish newman test results'
 
     #--------------------------------------------#
     # Selenium (UI) Test Suite - Archive the package  
@@ -158,7 +158,7 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
-        rootFolderOrFile: 
+        rootFolderOrFile: '(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
@@ -200,10 +200,10 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: azureServiceConnectionId     # ToDo
+              azureSubscription: $(azureServiceConnectionId)     # ToDo
               appName: $(webAppName)               # ToDo
               appType: webApp
-              package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-perftests.zip 
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           - task: CmdLine@2
@@ -214,7 +214,7 @@ stages:
                 unzip -o $(Build.BuildId)-perftests.zip
                 ./apache-jmeter-5.2.1/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
                 cat jmeter.log                                                                           # ToDo: Write your commands
-              workingDirectory: $(Pipeline.Workspace)/<artifact>            # ToDo: Use the artifact name from the task above
+              workingDirectory: $(Pipeline.Workspace)/drop-fakerestapi
               
   #--------------------------------------------#  
   # Selenium | Functional UI Tests
@@ -230,7 +230,7 @@ stages:
         deploy:
           steps:
           - download: current
-            artifact: drop-ui-tests     # ToDo: Change/provide a name
+            artifact: drop-uitests
             
           - task: Bash@3
             inputs:
