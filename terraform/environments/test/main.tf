@@ -52,3 +52,19 @@ module "publicip" {
   resource_type    = "publicip"
   resource_group   = "${module.resource_group.resource_group_name}"
 }
+
+data "azurerm_image" "packer_image" {
+  name                = "quality-test-server" # your Packer managed image name
+  resource_group_name = "Azuredevops"       # where Packer stored the image
+}
+
+module "vm" {
+  source               = "../../modules/vm"
+  location             = var.location
+  resource_group       = module.resource_group.resource_group_name
+  public_key_path      = var.public_key_path
+  public_ip            = module.publicip.public_ip_address_id
+  subnet_id            = module.network.subnet_id_test
+  admin_username       = var.admin_username
+  packer_image_id      = data.azurerm_image.packer_image.id
+}
