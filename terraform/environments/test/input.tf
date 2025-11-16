@@ -27,7 +27,7 @@ variable "application_type" {
 }
 
 # Network
-variable "public_key_path" {
+variable "public_key" {
   type    = string
 }
 variable "virtual_network_name" {}

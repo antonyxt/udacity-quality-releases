@@ -58,7 +58,7 @@ module "vm" {
   source          = "../../modules/vm"
   location        = var.location
   resource_group  = module.resource_group.resource_group_name
-  public_key_path = var.public_key_path
+  public_key      = var.public_key
   public_ip       = module.publicip.public_ip_address_id
   subnet_id       = module.network.subnet_id_test
   admin_username  = var.admin_username
