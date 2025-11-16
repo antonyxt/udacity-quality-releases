@@ -114,11 +114,13 @@ stages:
 #--------------------------------------------#    
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
-    # - task: CmdLine@2
-      # displayName: Install Newman
-      # inputs:
-        # script: 'npm install -g newman'
-        # workingDirectory: $(System.DefaultWorkingDirectory)
+    - task: CmdLine@2
+      displayName: Install Newman
+      inputs:
+        script: |
+          sudo npm install -g newman
+        workingDirectory: $(System.DefaultWorkingDirectory)
+
     # Postman Data Validation Test Suite    
     # ToDo: Verify the working directory
     - task: CmdLine@2
@@ -198,9 +200,10 @@ stages:
   # Deploy FakeRestAPI Web App
   # ToDo: Provide <environment name> you created in your DevOps project
   - deployment: FakeRestAPI
-    pool:
-      vmImage: 'Ubuntu-18.04'      
-    environment: $(environmentName)
+    environment:
+      name: $(environmentName)
+      resourceType: VirtualMachine
+      tags: selenium
     strategy:
       runOnce:
         deploy:
