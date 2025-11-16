@@ -70,7 +70,7 @@ stages:
 
 
 
-    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
+    - task: TerraformTaskV4@4
       displayName: Terraform validate
       inputs:
         provider: 'azurerm'
