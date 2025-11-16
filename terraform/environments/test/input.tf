@@ -27,9 +27,11 @@ variable "application_type" {
 }
 
 # Network
+variable "public_key_path" {
+  type    = string
+}
 variable "virtual_network_name" {}
 variable "address_prefix_test" {}
 variable "address_space" {}
-variable "public_key_path" {}
 variable "admin_username" {}
 
