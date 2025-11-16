@@ -27,7 +27,21 @@ variables:
 
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
+  
+- name: projectRoot
+  value: $(System.DefaultWorkingDirectory)
 
+- name: backend_rg
+  value: 'AzureDevops'
+  
+- name: backend_stg
+  value: 'tfstateatacnudacity'
+  
+- name: backend_container
+  value: 'tfstate'
+  
+- name: backend_key
+  value: 'at.quality.terraform.tfstate'
 
 
 stages:
@@ -41,22 +55,29 @@ stages:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
     # Install Terraform on the pipeline agent 
-    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-      displayName: 'Terrafom installation'
+    - task: TerraformInstaller@1
+      displayName: 'Install terraform'
       inputs:
-        terraformVersion: '1.2.9'
+        terraformVersion: 'latest'
     
     # Run Terraform Init on the pipeline agent 
 
-    - task: AzureCLI@2
-      displayName: 'Terraform init'
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Init'
       inputs:
-        azureSubscription: '$(azureServiceConnectionId)'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          cd $(System.DefaultWorkingDirectory)/terraform/environments/test
-          terraform init
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+        backendServiceArm: '$(azureServiceConnectionId)'
+
+
+        backendAzureRmContainerName: 'tfstate'
+
+        backendAzureRmResourceGroupName: $(backend_rg)
+        backendAzureRmStorageAccountName: $(backend_stg)
+        backendAzureRmContainerName: $(backend_container)
+        backendAzureRmKey: $(backend_key)
+
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
       displayName: Terraform validate
@@ -82,24 +103,21 @@ stages:
 
     
     # Run Terraform Apply
-    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
+    - task: TerraformTaskV4@4
       displayName: Terraform apply
       inputs:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
-        commandOptions: '-var="client_secret=$(client_secret)"'
+        #commandOptions: '-var="client_secret=$(client_secret)"'
+        env:
+          # These must be set as Secret Variables in Azure DevOps
+          TF_VAR_client_id: $(client_id)
+          TF_VAR_client_secret: $(client_secret)
+          TF_VAR_tenant_id: $(tenant_id)
+          TF_VAR_subscription_id: $(subscription_id)
 
-    # ToDo: Change the workingDirectory path, as applicable to you
-    # Destroy the resources in Azure by running a separate pipeline. 
-    # - task: TerraformTaskV3@3
-    #   displayName: Terraform destroy
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'destroy'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-    #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
 #--------------------------------------------#    
     # Postman - Install Newman    

@@ -1,15 +1,30 @@
 # Azure GUIDS
-variable "subscription_id" {}
-variable "client_id" {}
+variable "subscription_id" {
+  type = string
+}
+variable "client_id" {
+  type = string
+}
 variable "client_secret" {
   type = string
 }
-variable "tenant_id" {}
+variable "tenant_id" {
+  type = string
+}
 
 # Resource Group/Location
-variable "location" {}
-variable "resource_group" {}
-variable "application_type" {}
+variable "location" {
+  type    = string
+  default = "eastus"
+}
+variable "resource_group" {
+  type    = string
+  default = "Azuredevops"
+}
+variable "application_type" {
+  type    = string
+  default = "udacity-at-acn-test-app"
+}
 
 # Network
 variable "virtual_network_name" {}
