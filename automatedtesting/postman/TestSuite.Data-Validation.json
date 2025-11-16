@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "ba69c0bb-e4a1-448f-b7f3-3a8d81ab099d",
+		"name": "Data Validation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50009158",
+		"_collection_link": "https://antonyxt-5008742.postman.co/workspace/Antony-Xavier's-Workspace~08dce4eb-2dff-4217-8024-be1336116369/collection/50009158-ba69c0bb-e4a1-448f-b7f3-3a8d81ab099d?action=share&source=collection_link&creator=50009158"
+	},
+	"item": [
+		{
+			"name": "Create Author",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"// 2. Parse response as JSON",
+							"var jsonData = pm.response.json();",
+							"",
+							"// 3. Validate the returned firstName and lastName match the request",
+							"pm.test(\"First name matches\", function () {",
+							"    pm.expect(jsonData.firstName).to.eql(pm.environment.get(\"firstName\"));",
+							"});",
+							"",
+							"pm.test(\"Last name matches\", function () {",
+							"    pm.expect(jsonData.lastName).to.eql(pm.environment.get(\"lastName\"));",
+							"});",
+							"",
+							"// 4. Validate that id is returned and is numeric",
+							"pm.test(\"ID is returned and numeric\", function () {",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");",
+							"    pm.expect(jsonData.id).to.be.above(-1); // Ensure non-negative",
+							"});",
+							"",
+							"// 5. (Optional) Save the ID to environment for future requests",
+							"pm.environment.set(\"id\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 0,\n    \"idBook\": 0,\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Authors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. Status code is 200",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// 2. Response is JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// 3. Response is an array",
+							"pm.test(\"Response is an array\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('array');",
+							"});",
+							"",
+							"// 4. Each author object has required fields",
+							"pm.test(\"Each author has id, idBook, firstName, lastName\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    jsonData.forEach(author => {",
+							"        pm.expect(author).to.have.property('id');",
+							"        pm.expect(author).to.have.property('idBook');",
+							"        pm.expect(author).to.have.property('firstName');",
+							"        pm.expect(author).to.have.property('lastName');",
+							"    });",
+							"});",
+							"",
+							"// 5. Check that all ids are unique",
+							"pm.test(\"Author IDs are unique\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const ids = jsonData.map(author => author.id);",
+							"    const uniqueIds = [...new Set(ids)];",
+							"    pm.expect(ids.length).to.eql(uniqueIds.length);",
+							"});",
+							"",
+							"// 6. Optional: Check that firstName and lastName are not empty",
+							"pm.test(\"First and last names are not empty\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    jsonData.forEach(author => {",
+							"        pm.expect(author.firstName).to.not.be.empty;",
+							"        pm.expect(author.lastName).to.not.be.empty;",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Authors",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
