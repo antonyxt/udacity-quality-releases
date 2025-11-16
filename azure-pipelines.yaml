@@ -13,9 +13,6 @@ pool: my-agent-pool
 variables:
 - group: terraform-secrets
 
-- name: python.version
-  value: '3.7.6'
-
 - name: azureServiceConnectionId
   value: 'my-service-connection'
 
@@ -28,9 +25,6 @@ variables:
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
   
-- name: projectRoot
-  value: $(System.DefaultWorkingDirectory)
-
 - name: backend_rg
   value: 'AzureDevops'
   
@@ -68,15 +62,12 @@ stages:
         provider: 'azurerm'
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        backendServiceArm: '$(azureServiceConnectionId)'
-
-
-        backendAzureRmContainerName: 'tfstate'
-
+        backendServiceArm: $(azureServiceConnectionId)
         backendAzureRmResourceGroupName: $(backend_rg)
         backendAzureRmStorageAccountName: $(backend_stg)
         backendAzureRmContainerName: $(backend_container)
         backendAzureRmKey: $(backend_key)
+
 
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
