@@ -218,16 +218,11 @@ stages:
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           - task: CmdLine@2
-            displayName: 'Download JMeter & Unzip Test Artifact'
+            displayName: 'Unzip Test Artifact'
             inputs:
               script: |
-                echo "Downloading JMeter..."
-                wget "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.2.1.tgz"
-                tar -xf apache-jmeter-5.2.1.tgz
-
                 echo "Unzipping test suites..."
                 unzip -o $(Build.BuildId)-perftests.zip -d test-suite
-
                 mkdir -p jmeter-reports
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           - task: CmdLine@2
@@ -235,7 +230,7 @@ stages:
             inputs:
               script: |
                 echo "Running EnduranceTestSuite.jmx..."
-                ./apache-jmeter-5.2.1/bin/jmeter -n -t ./test-suite/EnduranceTestSuite.jmx -j ./jmeter-reports/EnduranceTest.log -f
+                jmeter -n -t ./test-suite/EnduranceTestSuite.jmx -j ./jmeter-reports/EnduranceTest.log -f
                 cat ./jmeter-reports/EnduranceTest.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           - task: CmdLine@2
@@ -243,7 +238,7 @@ stages:
             inputs:
               script: |
                 echo "Running StressTestSuite.jmx..."
-                ./apache-jmeter-5.2.1/bin/jmeter -n -t ./test-suite/StressTestSuite.jmx -j ./jmeter-reports/StressTest.log -f
+                jmeter -n -t ./test-suite/StressTestSuite.jmx -j ./jmeter-reports/StressTest.log -f
                 cat ./jmeter-reports/StressTest.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
   #--------------------------------------------#  
@@ -267,12 +262,6 @@ stages:
               targetType: 'inline'
               script: |           
                 #! /bin/bash
-                
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                pip3 install selenium
                 cd ~/
                 DIR=/home/testuser/app
                 if [ ! -d "$DIR" ]; then
