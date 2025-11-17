@@ -27,7 +27,7 @@ def login (user, password):
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage") 
-    driver = webdriver.Chrome()#options=options)
+    driver = webdriver.Chrome(options=options)
     print ('Browser started successfully. Navigating to the demo page to login.')
     driver.get("https://www.saucedemo.com/")
     time.sleep(3)
@@ -44,14 +44,14 @@ def login (user, password):
     path_inventory_item = "#inventory_container .inventory_item"
     product_items = driver.find_elements(By.CSS_SELECTOR, "#inventory_container .inventory_item")
     assert len(product_items) == 6
-    print("Successfully found 6 product items.")
+    print(f"Found {len(product_items)} products.")
     
-    print("Adding first 3 items to cart")
+    print("Adding all items to cart")
     for item in product_items:
         item_name = item.find_element(By.CSS_SELECTOR, ".inventory_item_name").text
         add_button = item.find_element(By.CSS_SELECTOR, ".pricebar button")
         add_button.click()
-        print("-->Succesfully added to shopping cart: " + item_name)
+        print(" ->Success!!! Add to cart: " + item_name)
         time.sleep(1)
         
 
@@ -81,7 +81,7 @@ def login (user, password):
         remove_button = cart_item.find_element(By.CSS_SELECTOR, "button.cart_button")
         item_name = cart_item.find_element(By.CSS_SELECTOR, ".inventory_item_name").text
         remove_button.click()
-        print("-->removed item from cart: " + item_name)
+        print(" ->Success!!! Remove from cart: " + item_name)
 
     try:
         badge = driver.find_element(By.CSS_SELECTOR, ".shopping_cart_badge")
