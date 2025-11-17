@@ -223,6 +223,7 @@ stages:
               script: |
                 echo "Unzipping test suites..."
                 unzip -o $(Build.BuildId)-perftests.zip -d test-suite
+                cp ./test-suite/input.csv ./input.csv
                 mkdir -p jmeter-reports
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           - task: CmdLine@2
