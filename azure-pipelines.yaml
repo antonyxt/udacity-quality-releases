@@ -182,7 +182,7 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive PerformanceTestSuite'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/PerformanceTestSuite.jmx'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
@@ -218,13 +218,26 @@ stages:
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           - task: CmdLine@2
+            displayName: 'Run JMeter Test Suites with HTML Reports'
             inputs:
               script: |
+                echo "Downloading JMeter..."
                 wget "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.2.1.tgz"
                 tar -xf apache-jmeter-5.2.1.tgz
-                unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.2.1/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
-                cat jmeter.log                                                                           # ToDo: Write your commands
+                echo "Unzipping test suites..."
+                unzip -o $(Build.BuildId)-perftests.zip -d test-suite
+                JMETER_BIN="./apache-jmeter-5.2.1/bin/jmeter"
+                TEST_DIR="$(Pipeline.Workspace)/drop-perftests/test-suite"
+                REPORT_DIR="$(Pipeline.Workspace)/drop-perftests/jmeter-reports"
+                mkdir -p $REPORT_DIR
+                # Run Endurance Test Suite
+                echo "Running EnduranceTestSuite.jmx..."
+                $JMETER_BIN -n -t $TEST_DIR/EnduranceTestSuite.jmx -j $REPORT_DIR/EnduranceTest.log  -f
+                cat $REPORT_DIR/EnduranceTest.log
+                # Run Stress Test Suite
+                echo "Running StressTestSuite.jmx..."
+                $JMETER_BIN -n -t $TEST_DIR/StressTestSuite.jmx -j $REPORT_DIR/StressTest.log -f
+                cat $REPORT_DIR/StressTest.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
               
   #--------------------------------------------#  
