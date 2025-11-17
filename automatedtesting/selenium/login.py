@@ -50,9 +50,13 @@ def login (user, password):
     for item in product_items:
         item_name = item.find_element(By.CSS_SELECTOR, ".inventory_item_name").text
         add_button = item.find_element(By.CSS_SELECTOR, ".pricebar button")
-        add_button.click()
+        item_code = add_button.get_attribute("id").replace("add-to-cart-", "")
+        #add_button.click()
+        driver.execute_script("arguments[0].click();", add_button)
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.ID, f"remove-{item_code}"))
+        )
         print(" ->Success!!! Add to cart: " + item_name)
-        time.sleep(1)
         
 
     # Verify cart for three items    
@@ -62,9 +66,8 @@ def login (user, password):
         cart_total_items = 0
     else:
         cart_total_items = int(badges[0].text) if badges[0].text.strip() != "" else 0
-
     print(f"Items in cart: {cart_total_items}")
-
+    assert cart_total_items == len(product_items)
 
     # Test Remove from Shopping Cart
     print("Clearing cart")
