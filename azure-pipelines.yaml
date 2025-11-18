@@ -224,7 +224,7 @@ stages:
             inputs:
               azureSubscription: $(azureServiceConnectionId)     # ToDo
               appName: $(webAppName)               # ToDo
-              appType: webApp
+              appType: webAppLinux
               package: $(Pipeline.Workspace)/drop-fakerestapi-py/$(Build.BuildId)-fakerestapi-py.zip 
               startUpCommand: 'pip install -r requirements.txt && gunicorn --bind 0.0.0.0:8000 app:app'
           #--------------------------------------------#    
