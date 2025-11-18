@@ -12,10 +12,10 @@ resource "azurerm_linux_web_app" "test" {
   resource_group_name = var.resource_group
   service_plan_id     = azurerm_service_plan.test.id
 
-  app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE" = 0
-  }
   site_config {
+    application_stack {
+      python_version = "3.12" # or node_version, dotnet_version, etc.
+    }
     always_on = false
   }
 }
