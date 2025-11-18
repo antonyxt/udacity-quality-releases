@@ -6,7 +6,7 @@ app = Flask(__name__)
 # ===== Pre-populated in-memory data (150 items each) =====
 books = [
     {"id": i, "title": f"Book {i}", "description": f"Description for book {i}", "pageCount": 100 + i*10,
-     "excerpt": f"Excerpt {i}", "publishDate": f"2020-{i:02d}-01T00:00:00Z"} for i in range(1, 100)
+     "excerpt": f"Excerpt {i}", "publishDate": f"2020-{i:02d}-01T00:00:00Z"} for i in range(1, 50)
 ]
 
 authors = [
@@ -14,7 +14,7 @@ authors = [
 ]
 
 users = [
-    {"id": i, "userName": f"user{i}"} for i in range(1, 25)
+    {"id": i, "userName": f"user{i}"} for i in range(1, 50)
 ]
 
 activities = [
