@@ -175,6 +175,17 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
+    - task: ArchiveFiles@2
+      displayName: 'Archive Python FakeRestAPI'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi-py'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi-py.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi-py.zip
+      displayName: 'Upload Package'
+      artifact: drop-fakerestapi-py      
+    
 
     #--------------------------------------------#  
     # JMeter (Performance) Test Suite - Archive
@@ -214,7 +225,8 @@ stages:
               azureSubscription: $(azureServiceConnectionId)     # ToDo
               appName: $(webAppName)               # ToDo
               appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip 
+              package: $(Pipeline.Workspace)/drop-fakerestapi-py/$(Build.BuildId)-fakerestapi-py.zip 
+              startUpCommand: 'pip install -r requirements.txt && gunicorn --bind 0.0.0.0:8000 app:app'
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           - task: CmdLine@2
@@ -271,16 +283,11 @@ stages:
                 mv $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip app
                 cd app
                 unzip -o $(Build.BuildId)-uitests.zip
-                FILE=/home/testuser/app/chromedriver_linux64.zip
-                if [ ! -f "$FILE" ]; then
-                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-                    wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-                    unzip -o chromedriver_linux64.zip
-                    sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
-                fi
                 export PATH=$PATH:/home/testuser/app
+                # Activate Python virtual environment
+                source /opt/selenium-env/bin/activate
                 echo "Starting Selenium Tests"
                 python3 login.py >> selenium.log
-
+                cat selenium.log
                 echo "Completed Selenium Tests. Check selenium.log for results."
 
