@@ -29,6 +29,11 @@ def find_item(data_list, item_id):
     return next((item for item in data_list if item["id"] == item_id), None)
 
 # ===== Books Endpoints =====
+@app.route("/")
+def home():
+    html = f"<h3>Sample Test Application for FakeRestAPI in Python</h3>"
+    return html.format(format)
+    
 @app.route("/api/v1/Books", methods=["GET"])
 def get_books():
     return jsonify(books)
