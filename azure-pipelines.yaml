@@ -166,16 +166,6 @@ stages:
     # FakeRestAPI - Archive
     # ToDo: Complete the ArchiveFiles@2 task and publish step 
     - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
-    - task: ArchiveFiles@2
       displayName: 'Archive Python FakeRestAPI'
       inputs:
         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi-py'
@@ -226,7 +216,7 @@ stages:
               appName: $(webAppName)               # ToDo
               appType: webAppLinux
               package: $(Pipeline.Workspace)/drop-fakerestapi-py/$(Build.BuildId)-fakerestapi-py.zip 
-              startUpCommand: 'pip install -r requirements.txt && gunicorn --bind 0.0.0.0:8000 app:app'
+
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           - task: CmdLine@2

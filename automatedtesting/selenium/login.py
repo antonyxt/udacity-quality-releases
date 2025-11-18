@@ -95,6 +95,8 @@ def login (user, password):
         print("Cart is empty! (badge removed)")
 
     
-login('standard_user', 'secret_sauce')
+if __name__ == "__main__":
+    login('standard_user', 'secret_sauce')
+
 
 # ToDo: Add more functional UI tests as per your requirements. 
