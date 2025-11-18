@@ -29,7 +29,7 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Endurance tests">
           <stringProp name="HTTPSampler.domain">udacity-at-acn-test-app-AppService.azurewebsites.net</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/Activities/${id}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/Books/${id}</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -89,7 +89,7 @@
             <collectionProp name="Arguments.arguments"/>
           </Arguments>
           <hashTree/>
-          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding"></stringProp>
             <stringProp name="filename">./input.csv</stringProp>

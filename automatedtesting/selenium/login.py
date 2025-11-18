@@ -18,7 +18,6 @@ def go_to_cart(driver):
 
 # Start the browser and login with standard_user
 def login (user, password):
-    global driver
     print ('Starting the browser...')
     # --uncomment when running in Azure DevOps.
     options = ChromeOptions()
@@ -38,7 +37,9 @@ def login (user, password):
     results = driver.find_element(By.CSS_SELECTOR, "#header_container > div.header_secondary_container > span").text
     assert "Products" in results
     print("Successfully logged username:" + user)
+    return driver
     
+def doShoping(driver):
     # Test Add to Cart
     print("BEGIN shopping...")
     path_inventory_item = "#inventory_container .inventory_item"
@@ -57,8 +58,9 @@ def login (user, password):
             EC.presence_of_element_located((By.ID, f"remove-{item_code}"))
         )
         print(" ->Success!!! Add to cart: " + item_name)
-        
+    return len(product_items)    
 
+def verifyCart(driver, productBought):
     # Verify cart for three items    
     badges = driver.find_elements(By.CSS_SELECTOR, ".shopping_cart_badge")
 
@@ -67,8 +69,9 @@ def login (user, password):
     else:
         cart_total_items = int(badges[0].text) if badges[0].text.strip() != "" else 0
     print(f"Items in cart: {cart_total_items}")
-    assert cart_total_items == len(product_items)
-
+    assert cart_total_items == productBought
+    
+def removeAllItems(driver):
     # Test Remove from Shopping Cart
     print("Clearing cart")
     #driver.find_element(By.CSS_SELECTOR,"#shopping_cart_container > a").click()
@@ -93,10 +96,16 @@ def login (user, password):
     except:
         # no badge = empty cart
         print("Cart is empty! (badge removed)")
-
+        
+def runTest():
+    driver = login('standard_user', 'secret_sauce')
+    productBought = doShoping(driver)
+    verifyCart(driver, productBought)
+    removeAllItems(driver)
     
 if __name__ == "__main__":
-    login('standard_user', 'secret_sauce')
+    runTest()
+    
 
 
 # ToDo: Add more functional UI tests as per your requirements. 

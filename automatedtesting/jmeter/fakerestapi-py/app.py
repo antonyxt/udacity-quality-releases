@@ -3,18 +3,18 @@ from flask import Flask, jsonify, request, abort
 app = Flask(__name__)
 
 # ===== Pre-populated in-memory data =====
-# ===== Pre-populated in-memory data (25 items each) =====
+# ===== Pre-populated in-memory data (150 items each) =====
 books = [
     {"id": i, "title": f"Book {i}", "description": f"Description for book {i}", "pageCount": 100 + i*10,
-     "excerpt": f"Excerpt {i}", "publishDate": f"2020-{i:02d}-01T00:00:00Z"} for i in range(1, 26)
+     "excerpt": f"Excerpt {i}", "publishDate": f"2020-{i:02d}-01T00:00:00Z"} for i in range(1, 100)
 ]
 
 authors = [
-    {"id": i, "firstName": f"AuthorFirst{i}", "lastName": f"AuthorLast{i}"} for i in range(1, 26)
+    {"id": i, "firstName": f"AuthorFirst{i}", "lastName": f"AuthorLast{i}"} for i in range(1, 50)
 ]
 
 users = [
-    {"id": i, "userName": f"user{i}"} for i in range(1, 26)
+    {"id": i, "userName": f"user{i}"} for i in range(1, 25)
 ]
 
 activities = [
