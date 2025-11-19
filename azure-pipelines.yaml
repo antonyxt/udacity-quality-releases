@@ -20,7 +20,7 @@ variables:
   value: $(System.DefaultWorkingDirectory)
 
 - name: environmentName
-  value: 'test-vm'
+  value: 'test-env'
 
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
@@ -261,6 +261,7 @@ stages:
             artifact: drop-uitests
             
           - task: Bash@3
+            displayName: 'Selenium UI Automation'
             inputs:
               targetType: 'inline'
               script: |           

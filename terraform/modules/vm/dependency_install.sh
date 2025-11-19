@@ -23,6 +23,7 @@ echo "Driver Version: $CHROME_VERSION"
 
 wget -q "https://storage.googleapis.com/chrome-for-testing-public/$DRIVER_VERSION/linux64/chromedriver-linux64.zip"
 unzip chromedriver-linux64.zip
+sudo rm -f chromedriver-linux64.zip
 
 echo "Moving Driver"
 mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
@@ -47,10 +48,10 @@ echo "===== Installing jmeter ====="
 echo "Installing JMeter 5.6.3..."
 JMETER_VERSION="5.6.3"
 cd /opt
-sudo wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-$${JMETER_VERSION}.tgz
-sudo tar -xf apache-jmeter-$${JMETER_VERSION}.tgz
-sudo mv apache-jmeter-$${JMETER_VERSION} /opt/jmeter
+sudo wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-$JMETER_VERSION.tgz
+sudo tar -xf apache-jmeter-$JMETER_VERSION.tgz
+sudo mv apache-jmeter-$JMETER_VERSION /opt/jmeter
 sudo ln -s /opt/jmeter/bin/jmeter /usr/local/bin/jmeter  # add to PATH
-echo "JMeter installation completed"
+sudo rm -f apache-jmeter-5.6.3.tgz
 
 
