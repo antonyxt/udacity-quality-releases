@@ -58,9 +58,47 @@ module "vm" {
   source          = "../../modules/vm"
   location        = var.location
   resource_group  = module.resource_group.resource_group_name
-  public_key      = var.public_key
   public_ip       = module.publicip.public_ip_address_id
   subnet_id       = module.network.subnet_id_test
   admin_username  = var.admin_username
+  admin_password  = var.admin_password
   packer_image_id = data.azurerm_image.packer_image.id
+}
+
+resource "azurerm_monitor_action_group" "http_404_action_group" {
+  name                = "http-404-alerts"
+  resource_group_name = module.resource_group.resource_group_name
+  short_name          = "http-404"
+
+  email_receiver {
+    name          = "email-notifications"
+    email_address = "antonyxt@gmail.com"
+  }
+}
+
+
+resource "azurerm_monitor_metric_alert" "alert_http_404" {
+  name                = "alert-http-404"
+  resource_group_name = module.resource_group.resource_group_name
+  scopes              = [module.appservice.app_id] 
+  description         = "Alert for HTTP 404"
+
+  severity = 3
+  enabled  = true
+
+  frequency 		   = "PT1M"   # check every 1 minute
+  window_size          = "PT5M"   # evaluate last 5 minute
+
+  action {
+    action_group_id = azurerm_monitor_action_group.http_404_action_group.id
+  }
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "Http404"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 1   # triggers when > 1 error occurs
+    # skip_metric_validation = true  # enable if Terraform fails metric verification
+  }
 }

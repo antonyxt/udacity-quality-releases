@@ -27,9 +27,6 @@ variable "application_type" {
 }
 
 # Network
-variable "public_key" {
-  type    = string
-}
 variable "virtual_network_name" {}
 variable "address_prefix_test" {}
 variable "address_space" {}

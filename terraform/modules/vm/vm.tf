@@ -12,21 +12,26 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = "vm-webinstance"
+  name                            = "linux-test-agent"
   location                        = var.location
   resource_group_name             = var.resource_group
   size                            = "Standard_DS2_v2"
   admin_username                  = var.admin_username
-  disable_password_authentication = true
-  network_interface_ids           = [azurerm_network_interface.main.id]
-  admin_ssh_key {
-    username   = var.admin_username
-    public_key = var.public_key
-  }
+  admin_password                  = var.admin_password
+  disable_password_authentication = false
+
+  network_interface_ids = [azurerm_network_interface.main.id]
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
+  custom_data = base64encode(
+    file("${path.module}/dependency_install.sh")
+  )
   source_image_id = var.packer_image_id
+
+  tags = {
+    selenium = "true"
+  }
 }
