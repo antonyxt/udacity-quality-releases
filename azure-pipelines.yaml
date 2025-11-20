@@ -40,6 +40,8 @@ variables:
 - name: Agent.LogTimestamp
   value: true
 
+- name: Agent.Diagnostic
+  value: true
 
 stages:
 #--------------------------------------------#  
