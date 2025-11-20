@@ -36,6 +36,9 @@ variables:
   
 - name: backend_key
   value: 'at.quality.terraform.tfstate'
+  
+- name: Agent.LogTimestamp
+  value: true
 
 
 stages:
