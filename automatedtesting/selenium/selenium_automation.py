@@ -36,7 +36,7 @@ def login (user, password):
     
     results = driver.find_element(By.CSS_SELECTOR, "#header_container > div.header_secondary_container > span").text
     assert "Products" in results
-    print("Successfully logged username:" + user)
+    print("Login Successfull!!! username:" + user)
     return driver
     
 def doShoping(driver):

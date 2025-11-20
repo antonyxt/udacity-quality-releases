@@ -286,7 +286,6 @@ stages:
                 # Activate Python virtual environment
                 source /opt/selenium-env/bin/activate
                 echo "Starting Selenium Tests"
-                python selenium_automation.py >> selenium.log
-                cat selenium.log
+                python selenium_automation.py | tee -a selenium.log
                 echo "Completed Selenium Tests. Check selenium.log for results."
 

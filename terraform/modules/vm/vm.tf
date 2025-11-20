@@ -15,7 +15,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   name                            = "linux-test-agent1"
   location                        = var.location
   resource_group_name             = var.resource_group
-  size                            = "Standard_DS2_v2"
+  size                            = "Standard_B2s"
   admin_username                  = var.admin_username
   admin_password                  = var.admin_password
   disable_password_authentication = false
