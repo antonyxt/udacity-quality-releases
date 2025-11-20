@@ -36,6 +36,10 @@ python3 -m venv /opt/selenium-env
 
 echo "===== Done installing Selenium + ChromeDriver ====="
 
+echo "===== Installing node & npm ====="
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
 echo "===== Installing Java ====="
 echo "Installing Java..."
 sudo apt-get install -y openjdk-11-jdk
