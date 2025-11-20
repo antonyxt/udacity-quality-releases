@@ -267,10 +267,18 @@ stages:
               script: |           
                 #! /bin/bash
                 cd ~/
-                DIR=/home/testuser/app
-                if [ ! -d "$DIR" ]; then
-                    mkdir app
+                DIR=/var/log/ui-test
+                # Delete DIR if it exists
+                if [ -d "$DIR" ]; then
+                    echo "$DIR exist. Deleting it"
+                    sudo rm -rf "$DIR"
                 fi
+                sudo mkdir -p "$DIR"
+                # Set permissions so Azure Monitor Agent can READ logs
+                echo "Setting read permissions (755) for AMA"
+                sudo chmod 755 "$DIR"
+                echo "Restarting Azure Monitor Agent..."
+                sudo systemctl restart azuremonitoragent
                 mv $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip app
                 cd app
                 unzip -o $(Build.BuildId)-uitests.zip
@@ -278,7 +286,7 @@ stages:
                 # Activate Python virtual environment
                 source /opt/selenium-env/bin/activate
                 echo "Starting Selenium Tests"
-                python login.py >> selenium.log
+                python selenium_automation.py >> selenium.log
                 cat selenium.log
                 echo "Completed Selenium Tests. Check selenium.log for results."
 

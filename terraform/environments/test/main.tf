@@ -50,7 +50,7 @@ module "publicip" {
 }
 
 data "azurerm_image" "packer_image" {
-  name                = "quality-test-server" # your Packer managed image name
+  name                = "linux-agent-image" # your Packer managed image name
   resource_group_name = "Azuredevops"         # where Packer stored the image
 }
 
