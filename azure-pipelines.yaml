@@ -117,7 +117,6 @@ stages:
       displayName: Install Newman
       inputs:
         script: |
-          sudo snap install postman
           sudo npm install -g newman
           sudo npm install newman-reporter-junitfull -g 
         workingDirectory: $(System.DefaultWorkingDirectory)
