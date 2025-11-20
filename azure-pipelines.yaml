@@ -279,10 +279,10 @@ stages:
                 sudo chmod 755 "$DIR"
                 echo "Restarting Azure Monitor Agent..."
                 sudo systemctl restart azuremonitoragent
-                mv $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip app
-                cd app
+                mv $(Pipeline.Workspace)/drop-uitests/$(Build.BuildId)-uitests.zip "$DIR/"
+                cd "$DIR"
                 unzip -o $(Build.BuildId)-uitests.zip
-                export PATH=$PATH:/home/testuser/app
+                export PATH=$PATH:$DIR
                 # Activate Python virtual environment
                 source /opt/selenium-env/bin/activate
                 echo "Starting Selenium Tests"
