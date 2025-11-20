@@ -1,0 +1,69 @@
+name: DestroyInfra
+
+# This pipeline should be triggered manually to avoid accidental deletion
+trigger: none
+
+# Use the same agent pool as your build pipeline
+pool: my-agent-pool
+
+variables:
+- group: terraform-secrets
+
+- name: azureServiceConnectionId
+  value: 'my-service-connection'
+
+  
+- name: backend_rg
+  value: 'AzureDevops'
+  
+- name: backend_stg
+  value: 'tfstateatacnudacity'
+  
+- name: backend_container
+  value: 'tfstate'
+  
+- name: backend_key
+  value: 'at.quality.terraform.tfstate'
+
+stages:
+#--------------------------------------------#
+# DESTROY INFRASTRUCTURE STAGE
+#--------------------------------------------#
+- stage: Destroy
+  jobs:
+  - job: DestroyInfrastructure
+    displayName: 'Terraform Destroy'
+    steps:
+    # Install Terraform on the agent
+    - task: TerraformInstaller@1
+      displayName: 'Install terraform'
+      inputs:
+        terraformVersion: 'latest'
+
+    # Run Terraform Init
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+        backendServiceArm: $(azureServiceConnectionId)
+        backendAzureRmResourceGroupName: $(backend_rg)
+        backendAzureRmStorageAccountName: $(backend_stg)
+        backendAzureRmContainerName: $(backend_container)
+        backendAzureRmKey: $(backend_key)
+
+    # Run Terraform Destroy
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Destroy'
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+      env:
+        # These must be set as Secret Variables in Azure DevOps
+        TF_VAR_client_id: $(client_id)
+        TF_VAR_client_secret: $(client_secret)
+        TF_VAR_tenant_id: $(tenant_id)
+        TF_VAR_subscription_id: $(subscription_id

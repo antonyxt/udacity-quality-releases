@@ -273,6 +273,7 @@ stages:
                     sudo rm -rf "$DIR"
                 fi
                 sudo mkdir -p "$DIR"
+                sudo chown $USER:$USER "$DIR"
                 # Set permissions so Azure Monitor Agent can READ logs
                 echo "Setting read permissions (755) for AMA"
                 sudo chmod 755 "$DIR"
