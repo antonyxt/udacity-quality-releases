@@ -22,9 +22,6 @@ variables:
 - name: environmentName
   value: 'test-env'
   
-- name: env_vm_tags
-  value: selenium
-  
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
   
@@ -212,7 +209,7 @@ stages:
     environment:
       name: $(environmentName)
       resourceType: VirtualMachine
-      tags: $(env_vm_tags)
+      tags: selenium
     strategy:
       runOnce:
         deploy:
@@ -260,7 +257,7 @@ stages:
     environment:
       name: $(environmentName)
       resourceType: VirtualMachine
-      tags: $(env_vm_tags)
+      tags: selenium
     strategy:
       runOnce:
         deploy:
