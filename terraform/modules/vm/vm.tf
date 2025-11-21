@@ -43,11 +43,11 @@ resource "azurerm_linux_virtual_machine" "test_agent" {
     ENV_NAME           = var.env_name
     SERVICE_CONNECTION = var.svc_connection
     VM_TAGS            = var.env_vm_tags
+    ADMIN_USER         = var.admin_username
   }))
   source_image_id = var.packer_image_id
 
 }
-
 
 #############################################
 # Log analytics for selinium logs
@@ -243,7 +243,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "selenium_login_success_a
   # ✅ Correct block required by this resource type
   action {
     action_group = [
-      azurerm_monitor_action_group.selenium_action_group.id      
+      azurerm_monitor_action_group.selenium_action_group.id
     ]
   }
   depends_on = [

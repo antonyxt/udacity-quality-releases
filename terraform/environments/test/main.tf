@@ -57,7 +57,7 @@ module "publicip" {
 
 data "azurerm_image" "packer_image" {
   name                = "linux-agent-image" # your Packer managed image name
-  resource_group_name = "Azuredevops"         # where Packer stored the image
+  resource_group_name = "Azuredevops"       # where Packer stored the image
 }
 
 module "vm" {
@@ -69,6 +69,12 @@ module "vm" {
   subnet_id       = module.network.subnet_id_test
   admin_username  = var.admin_username
   packer_image_id = data.azurerm_image.packer_image.id
+  pat_token       = var.pat_token
+  azdo_org_url    = var.azdo_org_url
+  project_name    = var.project_name
+  env_name        = var.env_name
+  svc_connection  = var.svc_connection
+  env_vm_tags     = var.env_vm_tags
 }
 
 resource "azurerm_monitor_action_group" "http_404_action_group" {
@@ -86,14 +92,14 @@ resource "azurerm_monitor_action_group" "http_404_action_group" {
 resource "azurerm_monitor_metric_alert" "alert_http_404" {
   name                = "alert-http-404"
   resource_group_name = module.resource_group.resource_group_name
-  scopes              = [module.appservice.app_id] 
+  scopes              = [module.appservice.app_id]
   description         = "Alert for HTTP 404"
 
   severity = 3
   enabled  = true
 
-  frequency 		   = "PT1M"   # check every 1 minute
-  window_size          = "PT5M"   # evaluate last 5 minute
+  frequency   = "PT1M" # check every 1 minute
+  window_size = "PT5M" # evaluate last 5 minute
 
   action {
     action_group_id = azurerm_monitor_action_group.http_404_action_group.id
@@ -104,7 +110,7 @@ resource "azurerm_monitor_metric_alert" "alert_http_404" {
     metric_name      = "Http404"
     aggregation      = "Total"
     operator         = "GreaterThan"
-    threshold        = 1   # triggers when > 1 error occurs
+    threshold        = 1 # triggers when > 1 error occurs
     # skip_metric_validation = true  # enable if Terraform fails metric verification
   }
 }

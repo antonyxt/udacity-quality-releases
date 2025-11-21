@@ -2,29 +2,6 @@
 set -e
 
 
-echo "===== Installing Google Chrome ====="
-wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt-get install -y ./google-chrome-stable_current_amd64.deb
-
-echo "===== Installing ChromeDriver (matching version) ====="
-CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-MAJOR_VERSION=$(echo "$CHROME_VERSION" | cut -d '.' -f 1)
-
-# Use jq to safely parse the JSON for the version
-DRIVER_VERSION=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json | jq -r ".versions[] | select(.version | startswith(\"$MAJOR_VERSION.\")) | .version")
-
-# Get the latest version from the remaining list (it should already be the latest)
-DRIVER_VERSION=$(echo "$DRIVER_VERSION" | tail -n 1)
-
-echo "Driver Version: $CHROME_VERSION"
-
-wget -q "https://storage.googleapis.com/chrome-for-testing-public/$DRIVER_VERSION/linux64/chromedriver-linux64.zip"
-unzip chromedriver-linux64.zip
-
-echo "Moving Driver"
-mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
-chmod +x /usr/local/bin/chromedriver
-
 echo "===== Creating Python environment ====="
 python3 -m venv /opt/selenium-env
 /opt/selenium-env/bin/pip install --upgrade pip
@@ -32,20 +9,65 @@ python3 -m venv /opt/selenium-env
 
 echo "===== Done installing Selenium + ChromeDriver ====="
 
-#    --- Install Java (JDK 11) ---
-echo "Installing Java..."
-sudo apt-get install -y openjdk-11-jdk
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" | sudo tee -a /etc/environment
-echo "PATH=$JAVA_HOME/bin:$PATH" | sudo tee -a /etc/environment
 
-#    --- Install JMeter ---
-echo "Installing JMeter 5.6.3..."
-JMETER_VERSION="5.6.3"
-cd /opt
-sudo sudo wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-$JMETER_VERSION.tgz
-sudo tar -xf apache-jmeter-$JMETER_VERSION.tgz
-sudo mv apache-jmeter-$JMETER_VERSION /opt/jmeter
-sudo ln -s /opt/jmeter/bin/jmeter /usr/local/bin/jmeter  # add to PATH
+# -----------------------------
+# provisioning as test agent
+# -----------------------------
+echo "provisioning as test agent..."
+# -----------------------------
+# PARAMETERS
+# -----------------------------
+PAT_TOKEN="${PAT_TOKEN}"                # PAT token
+AZDO_ORG_URL="${AZDO_ORG_URL}"             # Example: https://dev.azure.com/odluser290301
+PROJECT_NAME="${PROJECT_NAME}"             # Example: quality_release
+ENV_NAME="${ENV_NAME}"                 # Example: test_env
+SERVICE_CONNECTION="${SERVICE_CONNECTION}"       # Example: my-service-connection
+VM_TAGS="${VM_TAGS}"                  # Example: selenium,web
+ADMIN_USER="${ADMIN_USER}"
 
-echo "JMeter installation completed"
+AGENT_DIR="/home/${ADMIN_USER}/myagent"
+
+# -----------------------------
+# CHECK IF ALREADY INSTALLED
+# -----------------------------
+if [ -f "$AGENT_DIR/.agent" ]; then
+  echo "Agent already configured. Skipping registration."
+  exit 0
+fi
+
+# -----------------------------
+# INSTALL AGENT
+# -----------------------------
+echo "Agent not configured. Installing..."
+
+mkdir -p $AGENT_DIR
+
+curl -fkSL -o /tmp/vstsagent.tar.gz   https://download.agent.dev.azure.com/agent/4.264.2/vsts-agent-linux-x64-4.264.2.tar.gz
+
+tar -zxvf /tmp/vstsagent.tar.gz -C $AGENT_DIR
+chown -R ${ADMIN_USER}:${ADMIN_USER} $AGENT_DIR
+
+echo "Configuring agent for ${ENV_NAME} pool on ${AZDO_ORG_URL}..."
+su - ${ADMIN_USER} -c "
+  cd $${AGENT_DIR} && \
+    printf \"y\n${VM_TAGS}\n\" | ./config.sh --environment \
+    --environmentname \"$ENV_NAME\" \
+    --acceptteeeula \
+    --agent \"$HOSTNAME\" \
+    --url \"$AZDO_ORG_URL\" \
+    --projectname \"$PROJECT_NAME\" \
+    --work _work \
+    --auth PAT \
+    --token \"$PAT_TOKEN\" \
+    --environmentServiceNameAzureRM \"$SERVICE_CONNECTION\" \
+    --runasservice \
+    --replace
+"
+
+
+
+sudo ./svc.sh install
+sudo ./svc.sh start
+
+
+echo "Agent installation complete."
