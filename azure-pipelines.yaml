@@ -23,7 +23,7 @@ variables:
   value: 'test-env'
   
 - name: env_vm_tags
-  value: 'selenium'
+  value: selenium
   
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
