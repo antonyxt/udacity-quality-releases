@@ -50,7 +50,7 @@ chown -R ${ADMIN_USER}:${ADMIN_USER} $AGENT_DIR
 echo "Configuring agent for ${ENV_NAME} pool on ${AZDO_ORG_URL}..."
 su - ${ADMIN_USER} -c "
   cd $${AGENT_DIR} && \
-    printf \"y\n${VM_TAGS}\n\" | ./config.sh --environment \
+    printf \"y\nselenium\n\" | ./config.sh --environment \
     --environmentname \"$ENV_NAME\" \
     --acceptteeeula \
     --agent \"$HOSTNAME\" \
