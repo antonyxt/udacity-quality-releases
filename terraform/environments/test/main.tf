@@ -8,6 +8,12 @@ terraform {
     container_name       = "tfstate"
     key                  = "at.quality.terraform.tfstate"
   }
+  required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 1.13.0"
+    }
+  }
 }
 module "resource_group" {
   source         = "../../modules/resource_group"
