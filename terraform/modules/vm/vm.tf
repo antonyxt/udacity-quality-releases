@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    azapi = {
+      source = "Azure/azapi"
+    }
+  }
+}
+
 resource "azurerm_network_interface" "main" {
   name                = "nic"
   location            = var.location
