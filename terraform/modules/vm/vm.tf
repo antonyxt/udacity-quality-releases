@@ -37,7 +37,7 @@ resource "azurerm_linux_virtual_machine" "test_agent" {
     storage_account_type = "Standard_LRS"
   }
   custom_data = base64encode(
-    file("${path.module}/dependency_install.sh")
+    templatefile("${path.module}/dependency_install.sh")
   )
   source_image_id = var.packer_image_id
 
