@@ -32,4 +32,9 @@ variable "address_prefix_test" {}
 variable "address_space" {}
 variable "admin_username" {}
 variable "public_key" {}
-
+variable "pat_token" {}
+variable "azdo_org_url" {}
+variable "project_name" {}
+variable "env_name" {}
+variable "svc_connection" {}
+variable "env_vm_tags" {}

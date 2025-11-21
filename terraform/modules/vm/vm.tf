@@ -37,12 +37,15 @@ resource "azurerm_linux_virtual_machine" "test_agent" {
     storage_account_type = "Standard_LRS"
   }
   custom_data = base64encode(templatefile("${path.module}/dependency_install.sh", {
+    PAT_TOKEN          = var.pat_token
+    AZDO_ORG_URL       = var.azdo_org_url
+    PROJECT_NAME       = var.project_name
+    ENV_NAME           = var.env_name
+    SERVICE_CONNECTION = var.svc_connection
+    VM_TAGS            = var.env_vm_tags
   }))
   source_image_id = var.packer_image_id
 
-  tags = {
-    selenium = "true"
-  }
 }
 
 
@@ -240,7 +243,10 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "selenium_login_success_a
   # ✅ Correct block required by this resource type
   action {
     action_group = [
-      azurerm_monitor_action_group.selenium_action_group.id
+      azurerm_monitor_action_group.selenium_action_group.id      
     ]
   }
+  depends_on = [
+    azapi_resource.data_collection_logs_table
+  ]
 }

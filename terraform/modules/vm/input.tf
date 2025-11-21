@@ -5,3 +5,9 @@ variable "subnet_id" {}
 variable "admin_username" {}
 variable "public_key" {}
 variable "packer_image_id" {}
+variable "pat_token" {}
+variable "azdo_org_url" {}
+variable "project_name" {}
+variable "env_name" {}
+variable "svc_connection" {}
+variable "env_vm_tags" {}

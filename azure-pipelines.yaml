@@ -21,7 +21,10 @@ variables:
 
 - name: environmentName
   value: 'test-env'
-
+  
+- name: env_vm_tags
+  value: 'selenium'
+  
 - name: webAppName
   value: 'udacity-at-acn-test-app-AppService'
   
@@ -37,12 +40,6 @@ variables:
 - name: backend_key
   value: 'at.quality.terraform.tfstate'
   
-- name: Agent.LogTimestamp
-  value: true
-
-- name: Agent.Diagnostic
-  value: true
-
 stages:
 #--------------------------------------------#  
 # BUILD STAGE
@@ -114,6 +111,12 @@ stages:
         TF_VAR_tenant_id: $(tenant_id)
         TF_VAR_subscription_id: $(subscription_id)
         TF_VAR_public_key: $(vm_public_key)
+        TF_VAR_pat_token : $(pat_token)
+        TF_VAR_azdo_org_url: $(azdo_org_url)
+        TF_VAR_project_name: $(project_name)
+        TF_VAR_env_name: $(environmentName)
+        TF_VAR_svc_connection: $(azureServiceConnectionId)
+        TF_VAR_env_vm_tags: $(env_vm_tags)
 
 
 #--------------------------------------------#    
@@ -209,7 +212,7 @@ stages:
     environment:
       name: $(environmentName)
       resourceType: VirtualMachine
-      tags: selenium
+      tags: $(env_vm_tags)
     strategy:
       runOnce:
         deploy:
@@ -257,7 +260,7 @@ stages:
     environment:
       name: $(environmentName)
       resourceType: VirtualMachine
-      tags: selenium
+      tags: $(env_vm_tags)
     strategy:
       runOnce:
         deploy:
