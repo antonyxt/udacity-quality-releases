@@ -74,7 +74,7 @@ resource "azurerm_monitor_data_collection_endpoint" "selenium_dce" {
 }
 
 resource "time_sleep" "wait_for_law" {
-  depends_on      = [azurerm_log_analytics_workspace.main]
+  depends_on      = [azurerm_log_analytics_workspace.law]
   create_duration = "90s"
 }
 
