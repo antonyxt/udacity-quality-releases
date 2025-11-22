@@ -65,7 +65,8 @@ su - ${ADMIN_USER} -c "
 "
 
 
-
+cd $AGENT_DIR
+echo $AGENT_DIR
 sudo ./svc.sh install
 sudo ./svc.sh start
 
