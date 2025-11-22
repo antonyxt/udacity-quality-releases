@@ -224,7 +224,7 @@ stages:
             inputs:
               script: |
                 echo "Running EnduranceTestSuite.jmx..."
-                jmeter -n -t ./test-suite/EnduranceTestSuite.jmx -j ./jmeter-reports/EnduranceTest.log -f
+                jmeter -n -t ./test-suite/EnduranceTestSuite.jmx -j ./jmeter-reports/EnduranceTest.log -l ./jmeter-reports/EnduranceTest-results.jtl -e -o ./jmeter-reports/html-report-EnduranceTest -f
                 cat ./jmeter-reports/EnduranceTest.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
           - task: CmdLine@2
@@ -232,9 +232,24 @@ stages:
             inputs:
               script: |
                 echo "Running StressTestSuite.jmx..."
-                jmeter -n -t ./test-suite/StressTestSuite.jmx -j ./jmeter-reports/StressTest.log -f
+                jmeter -n -t ./test-suite/StressTestSuite.jmx -j ./jmeter-reports/StressTest.log -l ./jmeter-reports/StressTestSuite-results.jtl -e -o ./jmeter-reports/html-report-StressTestSuite -f
                 cat ./jmeter-reports/StressTest.log
               workingDirectory: $(Pipeline.Workspace)/drop-perftests
+          - task: ArchiveFiles@2
+            displayName: "Zip JMeter Results"
+            inputs:
+              rootFolderOrFile: "$(Pipeline.Workspace)/drop-perftests/jmeter-results"
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: "$(Build.ArtifactStagingDirectory)/jmeter-results.zip"
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish JMeter ZIP Artifact"
+            inputs:
+              pathToPublish: "$(Build.ArtifactStagingDirectory)/jmeter-results.zip"
+              artifactName: "jmeter-results"
+              publishLocation: "Container"
   #--------------------------------------------#  
   # Selenium | Functional UI Tests
   # ToDo: 
