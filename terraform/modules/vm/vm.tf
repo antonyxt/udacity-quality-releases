@@ -73,6 +73,11 @@ resource "azurerm_monitor_data_collection_endpoint" "selenium_dce" {
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
+resource "time_sleep" "wait_for_law" {
+  depends_on      = [azurerm_log_analytics_workspace.main]
+  create_duration = "90s"
+}
+
 resource "azapi_resource" "data_collection_logs_table" {
   name      = "SeleniumLogs_CL"
   parent_id = azurerm_log_analytics_workspace.law.id
@@ -104,6 +109,9 @@ resource "azapi_resource" "data_collection_logs_table" {
       body,
     ]
   }
+  depends_on = [
+    time_sleep.wait_for_law
+  ]
 }
 
 resource "azurerm_monitor_data_collection_rule" "selenium_dcr" {
