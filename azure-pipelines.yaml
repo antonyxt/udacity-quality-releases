@@ -244,7 +244,7 @@ stages:
               archiveFile: "$(Build.ArtifactStagingDirectory)/jmeter-results.zip"
               replaceExistingArchive: true
 
-          - task: PublishBuildArtifacts@1
+          - task: PublishPipelineArtifact@1
             displayName: "Publish JMeter ZIP Artifact"
             inputs:
               pathToPublish: "$(Build.ArtifactStagingDirectory)/jmeter-results.zip"
