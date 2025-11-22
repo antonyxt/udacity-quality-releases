@@ -230,7 +230,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "selenium_login_success_a
   query = <<-KQL
     SeleniumLogs_CL
     | where TimeGenerated > ago(5m)
-    | where RawData contains "Login Successfull"
+    | where RawData contains "Alert UI Automation"
     | summarize Count = count()
     | where Count > 0
   KQL

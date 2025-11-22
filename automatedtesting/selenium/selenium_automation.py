@@ -99,9 +99,12 @@ def removeAllItems(driver):
         
 def runTest():
     driver = login('standard_user', 'secret_sauce')
+    print("Alert UI Automation : login success")
     productBought = doShoping(driver)
+    print("Alert UI Automation : Shoping completed")
     verifyCart(driver, productBought)
     removeAllItems(driver)
+    print("Alert UI Automation : Finished remove all items from cart")
     
 if __name__ == "__main__":
     runTest()
