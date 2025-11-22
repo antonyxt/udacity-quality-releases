@@ -25,7 +25,7 @@ SERVICE_CONNECTION="${SERVICE_CONNECTION}"       # Example: my-service-connectio
 VM_TAGS="${VM_TAGS}"                  # Example: selenium,web
 ADMIN_USER="${ADMIN_USER}"
 
-AGENT_DIR="/home/${ADMIN_USER}/myagent"
+AGENT_DIR="/home/${ADMIN_USER}/azagent"
 
 # -----------------------------
 # CHECK IF ALREADY INSTALLED

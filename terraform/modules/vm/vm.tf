@@ -31,7 +31,9 @@ resource "azurerm_linux_virtual_machine" "test_agent" {
     username   = var.admin_username
     public_key = var.public_key
   }
-
+  identity {
+    type = "SystemAssigned"
+  }
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
